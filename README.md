@@ -50,7 +50,7 @@ cmd:
 ## 2.触发对应的自定义脚本
 - 当语音文本与脚本名称一致时，则触发脚本
 - 语音文本匹配多个内容时，脚本名称使用=号分隔
-![选择媒体插件](./screenshots/1.png)
+![选择媒体插件](./screenshorts/1.png)
 
 ## 3.调用系统内置的语音解析服务
 - 如果要使用更高级的功能，那就使用系统内置的 [conversation组件](https://www.home-assistant.io/integrations/conversation/)
