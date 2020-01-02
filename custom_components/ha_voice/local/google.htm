@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta content="email=no" name="format-detection" />
+	<meta name="screen-orientation" content="portrait">
+	<meta name="full-screen" content="yes">
+	<meta name="browsermode" content="application">  
+	<title>Google语音助手</title>
+	<link href="https://cdn.bootcss.com/loaders.css/0.1.2/loaders.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+	<style>
+	body{margin:0;padding:0;background:black;color:white;}
+	#app{position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);font-size:20px;}
+	.voice-loader{text-align:center;padding-top:50px;}
+	.voice-loader .ball-scale-multiple{height:100px;width:100px;    margin: 0 auto;}	
+	.voice-loader .ball-scale-multiple div{left:0;height:100px;width:100px;}
+	.speech-loader{display:flex;align-items: center;}
+	.speech-text{padding-left:20px;}
+	
+	.sending-loader{display:flex;align-items: center;}
+	.sending-text{padding-left:50px;}
+	
+	
+	.hide{display:none!important;}
+	
+	@media screen and (max-width: 500px) {
+		
+		.voice-loader span{display:none;}
+		.speech-loader,
+		.sending-loader{display:block;}
+		
+		.speech-text,
+		.sending-text{padding-left:0;}
+		
+	}
+	</style>
+</head>
+<body>
+
+      <div id="app">
+			
+		  <div class="voice-loader">
+			<div class="ball-scale-multiple"><div></div><div></div><div></div></div>
+			<div>
+				Google语音助手<span>，点击开始服务</span>
+			</div>
+		  </div>
+
+          <div class="speech-loader hide">
+            <div class="loader-inner line-scale-pulse-out-rapid">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div class="speech-text">
+              正在聆听中...
+            </div>
+          </div>
+		  
+		  <div class="sending-loader hide">
+            <div class="pacman">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div class="sending-text">
+              命令发送中...
+            </div>
+          </div>
+    
+      </div>  
+	  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	  <script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+	  <script>
+	  toastr.options = {
+		  "closeButton": true,
+		  "debug": false,
+		  "newestOnTop": false,
+		  "progressBar": true,
+		  "positionClass": "toast-top-right",
+		  "preventDuplicates": false,
+		  "onclick": null,
+		  "showDuration": "300",
+		  "hideDuration": "1000",
+		  "timeOut": "5000",
+		  "extendedTimeOut": "1000",
+		  "showEasing": "swing",
+		  "hideEasing": "linear",
+		  "showMethod": "fadeIn",
+		  "hideMethod": "fadeOut"
+		}
+		function toast(msg){
+			toastr["info"]("Google语音助手", msg)
+		}
+	  </script>
+	  <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+<script>
+	let sp = document.querySelector('.speech-loader'),
+		vo = document.querySelector('.voice-loader'),
+		st = document.querySelector('.speech-text'),
+		sl = document.querySelector('.sending-loader')
+	vo.onclick=()=>{
+		recognition.start()
+	}
+	document.addEventListener('DOMContentLoaded', function() {
+		FastClick.attach(document.body);
+	}, false);	
+</script>
+<script>
+		var timer = null;		
+		var recognition = new webkitSpeechRecognition();
+		recognition.lang = 'cmn-Hans-CN';
+		recognition.continuous = true;
+		recognition.interimResults = true;
+		//开始录音
+		recognition.onstart = function () {
+			vo.classList.add('hide')
+			sp.classList.remove('hide')
+			st.textContent = '正在聆听中...'
+		};
+		//出现错误
+		recognition.onerror = function (event) {
+			
+		};
+		//结束识别
+		recognition.onend = function () {
+			// console.log('结束了')
+			toast("识别结束，发送命令中...")
+			sp.classList.add('hide')
+			sl.classList.remove('hide')
+			let text = st.textContent
+			if(text){
+				let query = new URLSearchParams(location.search)
+				fetch(decodeURIComponent(query.get('api')),{
+					method: 'post',
+					body: JSON.stringify({
+						text
+					})
+				}).then(res=>res.json()).then(res=>{
+					console.log(res)
+					setTimeout(()=>{
+						toast(res.msg)
+					},1000)
+				}).finally(()=>{
+					sl.classList.add('hide')
+					vo.classList.remove('hide')
+				})
+			}
+		};
+		recognition.onresult = function (event) {
+			var result = event.results;
+			if (typeof (result) == 'undefined') {
+				console.log("gg---");				
+				return;
+			}
+			listenText = '';
+			var final_transcript = '';
+			for (var i = event.resultIndex; i < event.results.length; ++i) {
+				if (event.results[i].isFinal) {
+					final_transcript += event.results[i][0].transcript;
+				} else {
+					listenText += event.results[i][0].transcript;
+				}
+			}
+			//一句话识别完毕
+			if (final_transcript != "") {
+				st.textContent = final_transcript
+				recognition.stop();
+				return;
+			}
+			st.textContent = listenText
+			clearTimeout(timer);
+			timer = setTimeout(function () {
+				recognition.stop();
+			}, 2000);
+		};
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "domain": "ha_voice",
+  "name": "ha_voice",
+  "documentation": "https://github.com/shaonianzhentan/ha_voice",
+  "requirements": [
+    "baidu-aip==2.2.18.0"
+  ],
+  "dependencies": [],
+  "codeowners": []
+}

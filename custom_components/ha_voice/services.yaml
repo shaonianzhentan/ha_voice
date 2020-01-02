@@ -1,0 +1,6 @@
+process:
+  description: 执行文字命令
+  fields:
+    text:
+      description: 要执行的文字
+      example: '切换所有灯'
