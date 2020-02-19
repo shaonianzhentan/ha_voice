@@ -35,19 +35,24 @@
 	</style>
 	<script>
 		function ckvpn() {
-			speechSynthesis.getVoices()
-			return new Promise((resolve, reject) => {
-				let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
-				console.log('isChrome：', isChrome)
-				if (!isChrome) {
-					reject()
-				}
-				fetch('https://www.google.com/gen_204', { mode: 'no-cors' }).then(res => {
-					resolve()
-				})
-				setTimeout(() => {
-					reject()
-				}, 2000)
+			console.log(speechSynthesis.getVoices())
+			return new Promise((resolve, reject) => {				
+				setTimeout(()=>{
+				
+					console.log(speechSynthesis.getVoices())
+					let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
+					console.log('isChrome：', isChrome)
+					if (!isChrome) {
+						reject()
+					}
+					fetch('https://www.google.com/gen_204', { mode: 'no-cors' }).then(res => {
+						resolve()
+					})
+					setTimeout(() => {
+						reject()
+					}, 2000)
+					
+				},100)
 			})
 
 		}
@@ -60,36 +65,34 @@
 			}
 			let link = `${url}?api=${api}`
 			console.log(link)
-			// location.replace(link)
+			location.replace(link)
 		}
 
-		setTimeout(() => {
 
-			// 检测是否HTTPS
-			if (location.protocol === 'https:' || location.hostname === 'localhost') {
-				// 检测能否外网访问
-				ckvpn().then(() => {
-					// 使用google语音
-					redirect('google.htm', '')
-				}).catch(() => {
-					// 使用百度语音
-					redirect('baidu.htm', '')
-				})
-			} else {
-				// 检测是否有外网地址
-				let query = new URLSearchParams(location.search)
-				let api = query.get('api')
-				// 检测能否外网访问
-				ckvpn().then(() => {
-					// 使用google语音
-					redirect('google.htm', api)
-				}).catch(() => {
-					// 使用百度语音
-					redirect('baidu.htm', api)
-				})
-			}
 
-		}, 1000)
+		// 检测是否HTTPS
+		if (location.protocol === 'https:' || location.hostname === 'localhost') {
+			// 检测能否外网访问
+			ckvpn().then(() => {
+				// 使用google语音
+				redirect('google.htm', '')
+			}).catch(() => {
+				// 使用百度语音
+				redirect('baidu.htm', '')
+			})
+		} else {
+			// 检测是否有外网地址
+			let query = new URLSearchParams(location.search)
+			let api = query.get('api')
+			// 检测能否外网访问
+			ckvpn().then(() => {
+				// 使用google语音
+				redirect('google.htm', api)
+			}).catch(() => {
+				// 使用百度语音
+				redirect('baidu.htm', api)
+			})
+		}
 
 	</script>
 </head>
