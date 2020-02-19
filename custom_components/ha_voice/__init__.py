@@ -16,7 +16,7 @@ from aip import AipSpeech
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_voice'
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 URL = '/ha-voice-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN + '-local/' + VERSION
 

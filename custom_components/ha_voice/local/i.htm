@@ -58,39 +58,35 @@
 		}
 
 
-		function redirect(url, api) {
-			if (api) {
-				api = encodeURIComponent(api)
-				url = `https://api.jiluxinqing.com/ha/${url}`
-			}
+		function redirect(url) {
+			// 检测是否有外网地址
+			let query = new URLSearchParams(location.search)
+			let api = query.get('api')
+			api = encodeURIComponent(api)
 			let link = `${url}?api=${api}`
 			console.log(link)
 			location.replace(link)
 		}
 
-
-
+		
 		// 检测是否HTTPS
 		if (location.protocol === 'https:' || location.hostname === 'localhost') {
 			// 检测能否外网访问
 			ckvpn().then(() => {
 				// 使用google语音
-				redirect('google.htm', '')
+				redirect('google.htm')
 			}).catch(() => {
 				// 使用百度语音
-				redirect('baidu.htm', '')
+				redirect('baidu.htm')
 			})
 		} else {
-			// 检测是否有外网地址
-			let query = new URLSearchParams(location.search)
-			let api = query.get('api')
-			// 检测能否外网访问
+			// 如果不是HTTPS，则使用我的域名
 			ckvpn().then(() => {
 				// 使用google语音
-				redirect('google.htm', api)
+				redirect('https://api.jiluxinqing.com/ha/google.htm')
 			}).catch(() => {
 				// 使用百度语音
-				redirect('baidu.htm', api)
+				redirect('https://api.jiluxinqing.com/ha/baidu.htm')
 			})
 		}
 
