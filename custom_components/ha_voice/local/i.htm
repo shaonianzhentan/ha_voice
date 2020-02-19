@@ -38,7 +38,7 @@
 			return new Promise((resolve, reject) => {
 				let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
 				console.log('isChrome：', isChrome)
-				if(!isChrome){
+				if (!isChrome) {
 					reject()
 				}
 				fetch('https://www.google.com/gen_204', { mode: 'no-cors' }).then(res => {
@@ -62,29 +62,34 @@
 			// location.replace(link)
 		}
 
-		// 检测是否HTTPS
-		if (location.protocol === 'https:' || location.hostname === 'localhost') {
-			// 检测能否外网访问
-			ckvpn().then(() => {
-				// 使用google语音
-				redirect('google.htm', '')
-			}).catch(() => {
-				// 使用百度语音
-				redirect('baidu.htm', '')
-			})
-		} else {
-			// 检测是否有外网地址
-			let query = new URLSearchParams(location.search)
-			let api = query.get('api')
-			// 检测能否外网访问
-			ckvpn().then(() => {
-				// 使用google语音
-				redirect('google.htm', api)
-			}).catch(() => {
-				// 使用百度语音
-				redirect('baidu.htm', api)
-			})
-		}
+		setTimeout(() => {
+
+			// 检测是否HTTPS
+			if (location.protocol === 'https:' || location.hostname === 'localhost') {
+				// 检测能否外网访问
+				ckvpn().then(() => {
+					// 使用google语音
+					redirect('google.htm', '')
+				}).catch(() => {
+					// 使用百度语音
+					redirect('baidu.htm', '')
+				})
+			} else {
+				// 检测是否有外网地址
+				let query = new URLSearchParams(location.search)
+				let api = query.get('api')
+				// 检测能否外网访问
+				ckvpn().then(() => {
+					// 使用google语音
+					redirect('google.htm', api)
+				}).catch(() => {
+					// 使用百度语音
+					redirect('baidu.htm', api)
+				})
+			}
+
+		}, 1000)
+
 	</script>
 </head>
 
