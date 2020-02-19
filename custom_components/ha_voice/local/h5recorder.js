@@ -17,17 +17,17 @@
 
         var audioData = {
             size: 0 //录音文件长度
-                ,
+            ,
             buffer: [] //录音缓存
-                ,
+            ,
             inputSampleRate: context.sampleRate //输入采样率
-                ,
+            ,
             inputSampleBits: 16 //输入采样数位 8, 16
-                ,
+            ,
             outputSampleRate: config.sampleRate //输出采样率
-                ,
+            ,
             oututSampleBits: config.sampleBits //输出采样数位 8, 16
-                ,
+            ,
             input: function (data) {
                 this.buffer.push(new Float32Array(data));
                 this.size += data.length;
@@ -113,14 +113,14 @@
                 offset += 4;
                 // 写入采样数据 
                 if (sampleBits === 8) {
-                    for (var i = 0; i < bytes.length; i++, offset++) {
+                    for (var i = 0; i < bytes.length; i++ , offset++) {
                         var s = Math.max(-1, Math.min(1, bytes[i]));
                         var val = s < 0 ? s * 0x8000 : s * 0x7FFF;
                         val = parseInt(255 / (65535 / (val + 32768)));
                         data.setInt8(offset, val, true);
                     }
                 } else {
-                    for (var i = 0; i < bytes.length; i++, offset += 2) {
+                    for (var i = 0; i < bytes.length; i++ , offset += 2) {
                         var s = Math.max(-1, Math.min(1, bytes[i]));
                         data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
                     }
@@ -161,9 +161,16 @@
 
 
         //上传
-        this.upload = function (url, callback) {
+        this.upload = function (url) {
             var fd = new FormData();
             fd.append("mp3", this.getBlob());
+
+            return fetch(url, {
+                mode: 'no-cors',
+                method: 'post',
+                body: fd
+            }).then(res => res.json())
+            /*
             var xhr = new XMLHttpRequest();
             if (callback) {
                 xhr.upload.addEventListener("progress", function (e) {
@@ -183,6 +190,8 @@
             xhr.send(fd);
             //xhr.send('56766758');
             //console.log(xhr.responseText);
+
+            */
         }
 
 
@@ -210,8 +219,8 @@
         if (callback) {
             if (navigator.getUserMedia) {
                 navigator.getUserMedia({
-                        audio: true
-                    } //只启用音频
+                    audio: true
+                } //只启用音频
                     ,
                     function (stream) {
                         var rec = new h5recorder(stream, config);

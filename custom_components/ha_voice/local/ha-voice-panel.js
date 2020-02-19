@@ -98,20 +98,23 @@ class HaVoicePanel extends HTMLElement {
 
     google() {
         return new Promise((resolve, reject) => {
-            const controller = new AbortController();
-            let signal = controller.signal;
-            // 判断是否Chrome浏览器
-            let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
-            if(!isChrome){
-                reject()
-            }
-            fetch('https://www.google.com/gen_204', { mode: 'no-cors', signal }).then(res => {
-                resolve()
-            })
+            speechSynthesis.getVoices()
             setTimeout(() => {
-                controller.abort();
-                reject()
-            }, 2000)
+                const controller = new AbortController();
+                let signal = controller.signal;
+                // 判断是否Chrome浏览器
+                let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
+                if (!isChrome) {
+                    reject()
+                }
+                fetch('https://www.google.com/gen_204', { mode: 'no-cors', signal }).then(res => {
+                    resolve()
+                })
+                setTimeout(() => {
+                    controller.abort();
+                    reject()
+                }, 2000)
+            }, 1000)
         })
     }
 

@@ -140,6 +140,7 @@
 			if(text){
 				let query = new URLSearchParams(location.search)
 				fetch(decodeURIComponent(query.get('api')),{
+					mode: 'no-cors',
 					method: 'post',
 					body: JSON.stringify({
 						text

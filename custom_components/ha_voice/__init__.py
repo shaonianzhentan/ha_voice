@@ -16,7 +16,7 @@ from aip import AipSpeech
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_voice'
-VERSION = '1.0.5'
+VERSION = '1.0.7'
 URL = '/ha-voice-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN + '-local/' + VERSION
 
@@ -147,7 +147,8 @@ class HassGateView(HomeAssistantView):
     async def get(self, request):
         # 这里进行重定向
         hass = request.app["hass"]
-        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?api=' + hass.config.api.base_url.strip('/') + URL))
+        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?base_url=' + hass.config.api.base_url.strip('/')
+        +'&api=' + URL))
     
     async def post(self, request):
         hass = request.app["hass"]

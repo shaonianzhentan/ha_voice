@@ -36,9 +36,9 @@
 	<script>
 		function ckvpn() {
 			console.log(speechSynthesis.getVoices())
-			return new Promise((resolve, reject) => {				
-				setTimeout(()=>{
-				
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+
 					console.log(speechSynthesis.getVoices())
 					let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
 					console.log('isChrome：', isChrome)
@@ -51,8 +51,8 @@
 					setTimeout(() => {
 						reject()
 					}, 2000)
-					
-				},100)
+
+				}, 100)
 			})
 
 		}
@@ -61,14 +61,20 @@
 		function redirect(url) {
 			// 检测是否有外网地址
 			let query = new URLSearchParams(location.search)
+			let base_url = query.get('base_url')
 			let api = query.get('api')
-			api = encodeURIComponent(api)
+			// 判断当前是否支持本地服务
+			if (url.indexOf('http') == 0) {				
+				api = encodeURIComponent(base_url + api)
+			} else {
+				api = encodeURIComponent(api)
+			}
 			let link = `${url}?api=${api}`
 			console.log(link)
 			location.replace(link)
 		}
 
-		
+
 		// 检测是否HTTPS
 		if (location.protocol === 'https:' || location.hostname === 'localhost') {
 			// 检测能否外网访问
