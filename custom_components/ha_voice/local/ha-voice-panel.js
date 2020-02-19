@@ -55,7 +55,7 @@ class HaVoicePanel extends HTMLElement {
         `
         shadow.appendChild(style);
         this.shadow = shadow
-		const $ha = this.shadow.querySelector.bind(this.shadow)
+        const $ha = this.shadow.querySelector.bind(this.shadow)
 
         // 发送文字命令
         let txtCmd = shadow.querySelector('.txtCmd')
@@ -64,42 +64,47 @@ class HaVoicePanel extends HTMLElement {
                 console.log(this.hass)
                 let text = txtCmd.value.trim()
                 txtCmd.value = ''
-                this.send(text)                
+                this.send(text)
             }
         }
-		
-		$ha('ha-switch').onchange=(event)=>{
-			let ele = event.path[0]
-			let iframe = $ha('iframe')
-			let card = $ha('.card-content')
-			
-			if(ele.checked){
-				if(!iframe.src){
-					iframe.src = $ha('.card-header .name').dataset['link']
-				}
-				iframe.classList.remove('hide')
-				card.classList.add('hide')				
-			}else{
-				iframe.classList.add('hide')
-				card.classList.remove('hide')					
-			}			
-		}
-		
+
+        $ha('ha-switch').onchange = (event) => {
+            let ele = event.path[0]
+            let iframe = $ha('iframe')
+            let card = $ha('.card-content')
+
+            if (ele.checked) {
+                if (!iframe.src) {
+                    iframe.src = $ha('.card-header .name').dataset['link']
+                }
+                iframe.classList.remove('hide')
+                card.classList.add('hide')
+            } else {
+                iframe.classList.add('hide')
+                card.classList.remove('hide')
+            }
+        }
+
     }
 
     toast(message) {
         document.querySelector('home-assistant').dispatchEvent(new CustomEvent("hass-notification", { detail: { message } }))
     }
-	
-	send(text){
-		this.hass.callService('ha_voice', 'process', { text })
-		this.toast(`【${text}】发送成功`)
-	}
+
+    send(text) {
+        this.hass.callService('ha_voice', 'process', { text })
+        this.toast(`【${text}】发送成功`)
+    }
 
     google() {
         return new Promise((resolve, reject) => {
             const controller = new AbortController();
             let signal = controller.signal;
+            // 判断是否Chrome浏览器
+            let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google 普通话'))
+            if(!isChrome){
+                reject()
+            }
             fetch('https://www.google.com/gen_204', { mode: 'no-cors', signal }).then(res => {
                 resolve()
             })
@@ -131,7 +136,7 @@ class HaVoicePanel extends HTMLElement {
             }
             $ha('.is-https').textContent = ck.isHttps ? '支持' : '不支持'
             $ha('.is-localhost').textContent = ck.isLocalhost ? '支持' : '不支持'
-			headerLink.dataset['link'] = yy.state
+            headerLink.dataset['link'] = yy.state
             // 判断是否支持本地使用
             if (ck.isHttps || ck.isLocalhost) {
                 headerLink.removeAttribute('target')
@@ -141,12 +146,12 @@ class HaVoicePanel extends HTMLElement {
                     let iframe = $ha('iframe')
                     iframe.src = yy.state
                     iframe.classList.remove('hide')
-					$ha('ha-switch').checked = true
+                    $ha('ha-switch').checked = true
                 }
             } else {
                 headerLink.setAttribute('target', '_blank')
                 headerLink.setAttribute('href', yy.state)
-				$ha('ha-switch').classList.add('hide')
+                $ha('ha-switch').classList.add('hide')
             }
             // 检测是否支持Google服务
             this.google().then(() => {
@@ -163,19 +168,19 @@ class HaVoicePanel extends HTMLElement {
 
     setConfig(config) {
         this.config = config || {};
-		// 
-		let { cmd } = this.config
-		if(Array.isArray(cmd)){
-			let arr = cmd.map(ele => {
-				return `<span>${ele}</span>`
-			})
-			let cfgcmd = this.shadow.querySelector('.cfg-cmd')
-			cfgcmd.innerHTML = arr.join('')
-			cfgcmd.onclick=(event)=>{
-				let text = event.path[0].innerText
-				this.send(text)
-			}
-		}		
+        // 
+        let { cmd } = this.config
+        if (Array.isArray(cmd)) {
+            let arr = cmd.map(ele => {
+                return `<span>${ele}</span>`
+            })
+            let cfgcmd = this.shadow.querySelector('.cfg-cmd')
+            cfgcmd.innerHTML = arr.join('')
+            cfgcmd.onclick = (event) => {
+                let text = event.path[0].innerText
+                this.send(text)
+            }
+        }
     }
 
     getCardSize() {

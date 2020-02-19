@@ -36,6 +36,10 @@
 	<script>
 		function ckvpn() {
 			return new Promise((resolve, reject) => {
+				let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google 普通话'))
+				if(!isChrome){
+					reject()
+				}
 				fetch('https://www.google.com/gen_204', { mode: 'no-cors' }).then(res => {
 					resolve()
 				})
