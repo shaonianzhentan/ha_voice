@@ -101,7 +101,7 @@ class HaVoicePanel extends HTMLElement {
             const controller = new AbortController();
             let signal = controller.signal;
             // 判断是否Chrome浏览器
-            let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google 普通话'))
+            let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
             if(!isChrome){
                 reject()
             }
