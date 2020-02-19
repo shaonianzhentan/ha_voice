@@ -156,7 +156,7 @@ class HaVoicePanel extends HTMLElement {
             }).finally(() => {
                 setTimeout(() => {
                     this.loading = false
-                }, 8000)
+                }, 11000)
             })
         }
     }

@@ -16,9 +16,9 @@ from aip import AipSpeech
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_voice'
-VERSION = '1.0'
+VERSION = '1.0.1'
 URL = '/ha-voice-api-' + str(uuid.uuid4())
-ROOT_PATH = URL + '/' + VERSION
+ROOT_PATH = '/' + DOMAIN + '-local/' + VERSION
 
 CONF_APP_ID = 'app_id'
 CONF_API_KEY = 'api_key'
@@ -27,7 +27,6 @@ CONF_SECRET_KEY = 'secret_key'
 def setup(hass, config):
     """ 你的 APPID AK SK """    
     cfg  = config[DOMAIN]
-    _LOGGER.info(cfg)
     APP_ID = cfg.get(CONF_APP_ID)
     API_KEY = cfg.get(CONF_API_KEY)
     SECRET_KEY = cfg.get(CONF_SECRET_KEY)
@@ -35,7 +34,7 @@ def setup(hass, config):
     hass.data[DOMAIN] = AipSpeech(APP_ID, API_KEY, SECRET_KEY)    
     
     # 注册静态目录
-    local = hass.config.path("custom_components/ha_voice/local")
+    local = hass.config.path("custom_components/" + DOMAIN + "/local")
     if os.path.isdir(local):
         hass.http.register_static_path(ROOT_PATH, local, False)    
     Link(hass, "语音小助手", URL, "mdi:microphone")
@@ -53,6 +52,19 @@ def setup(hass, config):
     # 加载自定义卡片
     hass.components.frontend.add_extra_js_url(hass, ROOT_PATH + '/ha-voice-panel.js')
     # Return boolean to indicate that initialization was successfully.
+        # 显示插件信息
+    _LOGGER.info('''
+-------------------------------------------------------------------
+
+    文件管理插件【作者QQ：635147515】
+    
+    版本：''' + VERSION + '''    
+    
+    介绍：在HA里使用的语音小助手
+    
+    项目地址：https://github.com/shaonianzhentan/ha_voice
+    
+-------------------------------------------------------------------''')
     return True
 
 def text_start(findText, text):
@@ -135,7 +147,7 @@ class HassGateView(HomeAssistantView):
     async def get(self, request):
         # 这里进行重定向
         hass = request.app["hass"]
-        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?base_url=' + hass.config.api.base_url))
+        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?api=' + hass.config.api.base_url.strip('/') + URL))
     
     async def post(self, request):
         hass = request.app["hass"]

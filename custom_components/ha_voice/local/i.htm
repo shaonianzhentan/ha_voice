@@ -1,84 +1,103 @@
-
 <!DOCTYPE html>
-<html><head><meta charset="utf-8" />
-<title>语音小助手</title>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>语音小助手</title>
 
 	<link href="https://cdn.bootcss.com/loaders.css/0.1.2/loaders.min.css" rel="stylesheet">
 	<style>
-	body{margin:0;padding:0;background:black;color:white;}
-	#app{position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);font-size:20px;}
-	.voice-loader{text-align:center;padding-top:50px;}
-	.voice-loader .ball-pulse-rise{height:80px;width:100px;    margin: 0 auto;}	
-	</style>
-<script>
-function ckvpn(){
-	return new Promise((resolve,reject)=>{
-		fetch('https://www.google.com/gen_204',{mode:'no-cors'}).then(res=>{
-			resolve()
-		})
-		setTimeout(()=>{
-			reject()
-		},2000)
-	})
-	
-}
-
-
-function redirect(url, base_url){
-	let api = '/' + location.pathname.split('/')[1]
-	if(base_url){
-		api = encodeURIComponent(base_url + api)
-		url = `https://api.jiluxinqing.com/ha/${url}`
-	}
-	let link = `${url}?api=${api}`
-	console.log(link)
-	location.replace(link)
-}
-
-// 检测是否HTTPS
-if(location.protocol === 'https:' || location.hostname === 'localhost'){
-	// 检测能否外网访问
-	ckvpn().then(()=>{
-		// 使用google语音
-		redirect('google.htm', '')
-	}).catch(()=>{
-		// 使用百度语音
-		redirect('baidu.htm', '')
-	})
-}else{
-	// 检测是否有外网地址
-	let query = new URLSearchParams(location.search)
-	let base_url = query.get('base_url')
-	if(!base_url){
-		alert("请在http下声明base_url外网地址")
-		window.close()		
-	}else{
-		// 直接跳到我的HTTPS域名下
-		let len = base_url.length-1
-		if(base_url[len] === '/'){
-			base_url = base_url.substr(0, len)
+		body {
+			margin: 0;
+			padding: 0;
+			background: black;
+			color: white;
 		}
-		
-		// 检测能否外网访问
-		ckvpn().then(()=>{
-			// 使用google语音
-			redirect('google.htm', base_url)
-		}).catch(()=>{
-			// 使用百度语音
-			redirect('baidu.htm', base_url)
-		})
-	}
-	
-	
-}
-</script>
-</head><body>
- <div id="app">
-	 <div class="voice-loader">
-	<div class="ball-pulse-rise"><div></div><div></div><div></div><div></div><div></div></div>
-	<div>
-		正在检测浏览器环境
+
+		#app {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 20px;
+		}
+
+		.voice-loader {
+			text-align: center;
+			padding-top: 50px;
+		}
+
+		.voice-loader .ball-pulse-rise {
+			height: 80px;
+			width: 100px;
+			margin: 0 auto;
+		}
+	</style>
+	<script>
+		function ckvpn() {
+			return new Promise((resolve, reject) => {
+				fetch('https://www.google.com/gen_204', { mode: 'no-cors' }).then(res => {
+					resolve()
+				})
+				setTimeout(() => {
+					reject()
+				}, 2000)
+			})
+
+		}
+
+
+		function redirect(url, api) {
+			if (api) {
+				api = encodeURIComponent(api)
+				url = `https://api.jiluxinqing.com/ha/${url}`
+			}
+			let link = `${url}?api=${api}`
+			console.log(link)
+			location.replace(link)
+		}
+
+		// 检测是否HTTPS
+		if (location.protocol === 'https:' || location.hostname === 'localhost') {
+			// 检测能否外网访问
+			ckvpn().then(() => {
+				// 使用google语音
+				redirect('google.htm', '')
+			}).catch(() => {
+				// 使用百度语音
+				redirect('baidu.htm', '')
+			})
+		} else {
+			// 检测是否有外网地址
+			let query = new URLSearchParams(location.search)
+			let api = query.get('api')
+			// 检测能否外网访问
+			ckvpn().then(() => {
+				// 使用google语音
+				redirect('google.htm', api)
+			}).catch(() => {
+				// 使用百度语音
+				redirect('baidu.htm', api)
+			})
+		}
+	</script>
+</head>
+
+<body>
+	<div id="app">
+		<div class="voice-loader">
+			<div class="ball-pulse-rise">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div>
+				正在检测浏览器环境
+			</div>
+		</div>
 	</div>
-  </div>
- </div>
-</body></html>
+</body>
+
+</html>
