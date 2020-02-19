@@ -37,6 +37,7 @@
 		function ckvpn() {
 			return new Promise((resolve, reject) => {
 				let isChrome = speechSynthesis.getVoices().some(ele => ele.name.includes('Google'))
+				console.log('isChrome：', isChrome)
 				if(!isChrome){
 					reject()
 				}
