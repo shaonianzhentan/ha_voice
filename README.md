@@ -11,11 +11,8 @@ configuration.yaml 配置
 ```
 
 # base_url：因为要把录好的信息发回到HA里，所以必须要配置 base_url（没有外网地址就不用配置）
-# cors_allowed_origins：跨域域名（如果你的域名支持HTTPS，则可以不用配置这个）
 http:
   base_url: 在外网使用时必须配置
-  cors_allowed_origins:
-    - https://api.jiluxinqing.com
 
 # 百度语音识别必须的配置：app_id、api_key、secret_key
 # 申请地址：https://ai.baidu.com/tech/speech/asr
@@ -71,6 +68,9 @@ cmd:
 
 
 # 更新日志
+
+### v1.2
+- 允许跨域请求
 
 ### v1.1
 - 调整检测Google服务时间，8秒调整为11秒

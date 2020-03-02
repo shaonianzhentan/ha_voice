@@ -16,7 +16,7 @@ from aip import AipSpeech
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_voice'
-VERSION = '1.1'
+VERSION = '1.2'
 URL = '/ha-voice-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN + '-local/' + VERSION
 
@@ -143,6 +143,7 @@ class HassGateView(HomeAssistantView):
     url = URL
     name = DOMAIN
     requires_auth = False
+    cors_allowed = True
     
     async def get(self, request):
         # 这里进行重定向
