@@ -32,7 +32,7 @@ def setup(hass, config):
     SECRET_KEY = cfg.get(CONF_SECRET_KEY)
     
     hass.data[DOMAIN] = {
-       'base_url': cfg.get('ha_base_url', hass.config.api.base_url)
+       'base_url': cfg.get('ha_base_url', hass.config.api.base_url),
        'ai': AipSpeech(APP_ID, API_KEY, SECRET_KEY)
     }
     
