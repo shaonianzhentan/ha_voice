@@ -126,7 +126,7 @@ class HaVoicePanel extends HTMLElement {
         // console.log(hass)
         this._hass = hass
         let { states } = hass
-        let yy = states['weblink.yu_yin_xiao_zhu_shou']
+        let yy = states['ha_voice.link']
         if (yy) {
             if (this.loading) return;
             this.loading = true

@@ -7,7 +7,6 @@ import json
 import string
 from aiohttp import web
 import voluptuous as vol
-from homeassistant.components.weblink import Link
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.helpers import config_validation as cv, intent
 
@@ -30,15 +29,19 @@ def setup(hass, config):
     APP_ID = cfg.get(CONF_APP_ID)
     API_KEY = cfg.get(CONF_API_KEY)
     SECRET_KEY = cfg.get(CONF_SECRET_KEY)
+    SECRET_KEY = cfg.get(CONF_SECRET_KEY)
     
-    hass.data[DOMAIN] = AipSpeech(APP_ID, API_KEY, SECRET_KEY)    
+    hass.data[DOMAIN] = {
+       'base_url': cfg.get('ha_base_url', hass.config.api.base_url)
+       'ai': AipSpeech(APP_ID, API_KEY, SECRET_KEY)
+    }
     
     # 注册静态目录
     local = hass.config.path("custom_components/" + DOMAIN + "/local")
     if os.path.isdir(local):
-        hass.http.register_static_path(ROOT_PATH, local, False)    
-    Link(hass, "语音小助手", URL, "mdi:microphone")
-    
+        hass.http.register_static_path(ROOT_PATH, local, False)
+    hass.states.set("ha_voice.link", URL)
+
     hass.http.register_view(HassGateView)
     
     async def handle_text(call):
@@ -148,7 +151,7 @@ class HassGateView(HomeAssistantView):
     async def get(self, request):
         # 这里进行重定向
         hass = request.app["hass"]
-        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?base_url=' + hass.config.api.base_url.strip('/')
+        return web.HTTPFound(location=(ROOT_PATH + '/i.htm?base_url=' + hass.data[DOMAIN]['base_url'].strip('/')
         +'&api=' + URL))
     
     async def post(self, request):
@@ -167,7 +170,7 @@ class HassGateView(HomeAssistantView):
                     size += len(chunk)
                     f.write(chunk)
             # 读取文件
-            res = hass.data[DOMAIN].asr(get_file_content(filename), 'wav', 8000, {
+            res = hass.data[DOMAIN]['ai'].asr(get_file_content(filename), 'wav', 8000, {
                 'dev_pid': 1537,
             })
             # 识别结束，删除文件

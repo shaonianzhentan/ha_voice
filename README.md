@@ -10,16 +10,14 @@
 configuration.yaml 配置
 ```
 
-# base_url：因为要把录好的信息发回到HA里，所以必须要配置 base_url（没有外网地址就不用配置）
-http:
-  base_url: 在外网使用时必须配置
-
 # 百度语音识别必须的配置：app_id、api_key、secret_key
 # 申请地址：https://ai.baidu.com/tech/speech/asr
+# ha_base_url: 在外网使用时必须配置(HA的域名)
 ha_voice:
   app_id: '15147521'
   api_key: 'NXQYhBSGYb6xve8m3FmwOrkU'
   secret_key: 'Zio57yIahYxXLMPmV7FSkG4ahfe0zbXg'
+  ha_base_url: https://ha.xxx.com
 
 ```
 
@@ -71,6 +69,8 @@ cmd:
 
 ### v1.2
 - 允许跨域请求
+- 删除weblink兼容HA0.107
+- 可自定义HA域名
 
 ### v1.1
 - 调整检测Google服务时间，8秒调整为11秒
