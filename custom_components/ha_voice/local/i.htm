@@ -34,6 +34,8 @@
 		}
 	</style>
 	<script>
+		let query = new URLSearchParams(location.search)
+
 		function ckvpn() {
 			console.log(speechSynthesis.getVoices())
 			return new Promise((resolve, reject) => {
@@ -59,12 +61,11 @@
 
 
 		function redirect(url) {
-			// 检测是否有外网地址
-			let query = new URLSearchParams(location.search)
+			// 检测是否有外网地址			
 			let base_url = query.get('base_url')
 			let api = query.get('api')
 			// 判断当前是否支持本地服务
-			if (url.indexOf('http') == 0) {				
+			if (url.indexOf('http') == 0) {
 				api = encodeURIComponent(base_url + api)
 			} else {
 				api = encodeURIComponent(api)
@@ -74,27 +75,25 @@
 			location.replace(link)
 		}
 
-
-		// 检测是否HTTPS
-		if (location.protocol === 'https:' || location.hostname === 'localhost') {
-			// 检测能否外网访问
-			ckvpn().then(() => {
-				// 使用google语音
-				redirect('google.htm')
-			}).catch(() => {
-				// 使用百度语音
-				redirect('baidu.htm')
-			})
-		} else {
-			// 如果不是HTTPS，则使用我的域名
-			ckvpn().then(() => {
-				// 使用google语音
-				redirect('https://api.jiluxinqing.com/ha/google.htm')
-			}).catch(() => {
-				// 使用百度语音
-				redirect('https://api.jiluxinqing.com/ha/baidu.htm')
-			})
-		}
+		; (() => {
+			// 如果是APP套壳,则调用APP里的语音识别
+			if (query.get('app') === 'voice') {
+				return redirect('app.html')
+			}
+			// 检测是否HTTPS
+			if (location.protocol === 'https:' || location.hostname === 'localhost') {
+				// 检测能否外网访问
+				ckvpn().then(() => {
+					// 使用google语音
+					redirect('google.htm')
+				}).catch(() => {
+					// 使用百度语音
+					redirect('baidu.htm')
+				})
+			} else {
+				top.alert('不好意思, 你的域名不是HTTPS,所以玩不了')
+			}
+		})();
 
 	</script>
 </head>

@@ -75,7 +75,12 @@ class HaVoicePanel extends HTMLElement {
 
             if (ele.checked) {
                 if (!iframe.src) {
-                    iframe.src = $ha('.card-header .name').dataset['link']
+                    let link = $ha('.card-header .name').dataset['link']
+                    // 判断是否为安卓套壳
+                    if ('start_voice' in top.window.external) {
+                        link += '&app=voice'
+                    }                     
+                    iframe.src = link
                 }
                 iframe.classList.remove('hide')
                 card.classList.add('hide')
