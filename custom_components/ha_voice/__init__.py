@@ -29,7 +29,6 @@ def setup(hass, config):
     APP_ID = cfg.get(CONF_APP_ID)
     API_KEY = cfg.get(CONF_API_KEY)
     SECRET_KEY = cfg.get(CONF_SECRET_KEY)
-    SECRET_KEY = cfg.get(CONF_SECRET_KEY)
     
     hass.data[DOMAIN] = {
        'base_url': cfg.get('ha_base_url', hass.config.api.base_url),
