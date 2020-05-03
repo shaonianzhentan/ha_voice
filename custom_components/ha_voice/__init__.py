@@ -131,7 +131,7 @@ async def conversation_process(hass, text):
         else:
             # 调用内置的语音服务
             if hass.services.has_service('conversation','process'):
-                _log_info("调用内置的语音服务")
+                _LOGGER.info("调用内置的语音服务")
                 await hass.services.async_call('conversation', 'process', {'text': text})
                 return {'code': 0, 'msg': '调用内置的语音服务', 'text': text}
             else:
